@@ -2,18 +2,14 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Tag;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
-class TagController extends AbstractController
+class TagController extends AbstractApiController
 {
-    #[Route('/tag', name: 'tag')]
     public function index(): Response
     {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/TagController.php',
-        ]);
+        $tags = $this->getDoctrine()->getRepository(Tag::class)->findAll();
+        return $this->response($tags);
     }
 }
