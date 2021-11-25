@@ -4,9 +4,15 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
 abstract class AbstractApiController extends AbstractController
 {
+  /**
+   * @var SerializerInterface
+   */
+  protected SerializerInterface $serializer;
+
   protected function buildForm(
     string $type,
     $data = null,
@@ -18,5 +24,10 @@ abstract class AbstractApiController extends AbstractController
 
     return $this->container->get('form.factory')
       ->createNamed('', $type, $data, $options);
+  }
+
+  public function __construct(SerializerInterface $serializer)
+  {
+    $this->serializer = $serializer;
   }
 }
