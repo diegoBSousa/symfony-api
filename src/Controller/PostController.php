@@ -21,18 +21,18 @@ class PostController extends AbstractApiController
 
         $form->handleRequest($req);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if (!$form->isSubmitted() && !$form->isValid()) {
             // throw exception
-            echo 'Error';
+            echo 'Error, sent data is invalid.';
             exit;
         }
 
         /** @var Post $post */
         $post = $form->getData();
 
-        $this->getDoctrine()->getManager()->persist($customer);
+        $this->getDoctrine()->getManager()->persist($post);
         $this->getDoctrine()->getManager()->flush();
 
-        return $this->json([]);
+        return $this->json($post);
     }
 }
