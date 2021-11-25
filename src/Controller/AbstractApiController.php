@@ -13,6 +13,11 @@ abstract class AbstractApiController extends AbstractController
    */
   protected SerializerInterface $serializer;
 
+  public function __construct(SerializerInterface $serializer)
+  {
+    $this->serializer = $serializer;
+  }
+
   protected function buildForm(
     string $type,
     $data = null,
@@ -24,10 +29,5 @@ abstract class AbstractApiController extends AbstractController
 
     return $this->container->get('form.factory')
       ->createNamed('', $type, $data, $options);
-  }
-
-  public function __construct(SerializerInterface $serializer)
-  {
-    $this->serializer = $serializer;
   }
 }
