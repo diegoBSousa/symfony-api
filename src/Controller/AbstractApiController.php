@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
-abstract class AbstractApiController extends AbstractController
+abstract class AbstractApiController extends AbstractFOSRestController
 {
   /**
    * @var SerializerInterface
