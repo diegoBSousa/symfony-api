@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\SerializerInterface;
 
 abstract class AbstractApiController extends AbstractFOSRestController
@@ -29,5 +30,10 @@ abstract class AbstractApiController extends AbstractFOSRestController
 
     return $this->container->get('form.factory')
       ->createNamed('', $type, $data, $options);
+  }
+
+  protected function response($data, int $statusCode = Response::HTTP_OK): Response
+  {
+    return $this->handleView($this->view($data, $statusCode));
   }
 }
