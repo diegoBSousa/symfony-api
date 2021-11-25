@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class PostController extends AbstractController
+class PostController extends AbstractApiController
 {
     #[Route('/post', name: 'post')]
     public function index(Request $req): Response
