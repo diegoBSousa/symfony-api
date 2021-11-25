@@ -22,9 +22,7 @@ class PostController extends AbstractApiController
         $form->handleRequest($req);
 
         if (!$form->isSubmitted() && !$form->isValid()) {
-            // throw exception
-            echo 'Error, sent data is invalid.';
-            exit;
+            return $this->response($form, Response::HTTP_BAD_REQUEST);
         }
 
         /** @var Post $post */
