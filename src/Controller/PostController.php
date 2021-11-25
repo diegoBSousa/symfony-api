@@ -12,7 +12,7 @@ class PostController extends AbstractApiController
     public function index(Request $req): Response
     {
         $posts = $this->getDoctrine()->getRepository(Post::class)->findAll();
-        return $this->json($posts);
+        return $this->response($posts);
     }
 
     public function create(Request $req)
@@ -31,6 +31,6 @@ class PostController extends AbstractApiController
         $this->getDoctrine()->getManager()->persist($post);
         $this->getDoctrine()->getManager()->flush();
 
-        return $this->json($post);
+        return $this->response($post);
     }
 }
