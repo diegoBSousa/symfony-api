@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController as ControllerAbstractController;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 
-abstract class AbstractController extends ControllerAbstractController
+abstract class AbstractApiController extends AbstractController
 {
   protected function buildForm(
     string $type,
@@ -13,7 +13,7 @@ abstract class AbstractController extends ControllerAbstractController
     array $options = []
   ): FormInterface {
     $options = array_merge($options, [
-      'csrf_protection' => false,
+      //'csrf_protection' => false, // have to install security bundle
     ]);
 
     return $this->container->get('form.factory')
