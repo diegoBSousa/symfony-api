@@ -8,6 +8,9 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Serializer\Encoder\CsvEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 class ImportPostsCommand extends Command
 {
@@ -34,9 +37,13 @@ class ImportPostsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
+        $inputFile = $this->appDir . '/posts-and-tags.csv';
 
-        $io->success($this->appDir);
+        $parser = new Serializer([new ObjectNormalizer()], [new CsvEncoder()]);
+
+        $rows = $parser->decode(file_get_contents($inputFile), 'csv');
+
+        dd($rows);
 
         return Command::SUCCESS;
     }
