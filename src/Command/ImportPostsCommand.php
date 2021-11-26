@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use Doctrine\ORM\EntityManagerInterface;
 use PhpParser\Node\Expr\Cast\Array_;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -17,11 +18,20 @@ class ImportPostsCommand extends Command
 {
     protected static $defaultName = 'app:import-posts';
     protected static $defaultDescription = 'Import or update Post and Tags';
+
+    /** @var String */
     private String $appDir;
 
-    public function __construct($appDir)
+    /**
+     * @var EntityManagerInterface
+     */
+    private EntityManagerInterface $entityManager;
+
+    public function __construct($appDir, EntityManagerInterface $entityManager)
     {
         $this->appDir = $appDir;
+        $this->entityManager = $entityManager;
+
         parent::__construct();
     }
 
@@ -42,7 +52,9 @@ class ImportPostsCommand extends Command
 
         $rows = $this->parseCsv($fileName);
 
-        dd($rows);
+        foreach (array_keys($rows) as $index) {
+            //
+        }
 
         return Command::SUCCESS;
     }
