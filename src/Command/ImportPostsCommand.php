@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use PhpParser\Node\Expr\Cast\Array_;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -37,14 +38,23 @@ class ImportPostsCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $inputFile = $this->appDir . '/posts-and-tags.csv';
+        $fileName = $input->getArgument('filePath');
+
+        $rows = $this->parseCsv($fileName);
+
+        dd($rows);
+
+        return Command::SUCCESS;
+    }
+
+    private function parseCsv($fileName): array
+    {
+        $inputFile = "{$this->appDir}/{$fileName}";
 
         $parser = new Serializer([new ObjectNormalizer()], [new CsvEncoder()]);
 
         $rows = $parser->decode(file_get_contents($inputFile), 'csv');
 
-        dd($rows);
-
-        return Command::SUCCESS;
+        return $rows;
     }
 }
