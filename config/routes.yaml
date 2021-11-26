@@ -10,3 +10,10 @@ post_create:
   path: /api/v1/posts
   controller: App\Controller\PostController::create
   methods: [POST]
+
+post_delete:
+  path: /api/v1/posts/{postId}
+  controller: App\Controller\PostController::delete
+  methods: [DELETE]
+  requirements:
+    postId: '\d+'
