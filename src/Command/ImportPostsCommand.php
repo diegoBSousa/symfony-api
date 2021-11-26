@@ -2,8 +2,11 @@
 
 namespace App\Command;
 
+use App\Entity\Post;
+use App\Entity\Tag;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\EntityManagerInterface;
-use PhpParser\Node\Expr\Cast\Array_;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -52,11 +55,87 @@ class ImportPostsCommand extends Command
 
         $rows = $this->parseCsv($fileName);
 
+        /** @var PostItemRepository $postItemRepository */
+        $postItemRepository = $this->entityManager->getRepository(Post::class);
+
         foreach (array_keys($rows) as $index) {
-            //
+
+            /** @var Post $postItem */
+            $postItem = $postItemRepository->findOneBy([
+                'title' => $rows[$index]['TITLE']
+            ]);
+
+            if ($postItem) {
+                $postItem->setContent($rows[$index]['CONTENT']);
+                $postItem->setImage($rows[$index]['IMAGE']);
+
+                $this->handleTags($postItem, $rows[$index]['TAGS']);
+
+                $this->entityManager->persist($postItem);
+                $this->entityManager->flush();
+                continue;
+            }
+
+            $newPostItem = new Post();
+
+            $newPostItem->setTitle($rows[$index]['TITLE']);
+            $newPostItem->setContent($rows[$index]['CONTENT']);
+            $newPostItem->setImage($rows[$index]['IMAGE']);
+            $this->handleTags($newPostItem, $rows[$index]['TAGS']);
+
+            $this->entityManager->persist($newPostItem);
+            $this->entityManager->flush();
         }
 
         return Command::SUCCESS;
+    }
+
+    private function handleTags(Post &$postEntity, $tagText)
+    {
+        $oldTags = $postEntity->getTags();
+
+        foreach ($oldTags as $oldTag) {
+            $postEntity->removeTag($oldTag);
+        }
+
+        $newTags = $this->getTagEntities($tagText);
+
+        foreach ($newTags as $newTag) {
+            $postEntity->addTag($newTag);
+        }
+    }
+
+    private function getTagEntities(String $tagText): Collection
+    {
+        $textTagArray = array_map(
+            function ($tag) {
+                return trim($tag);
+            },
+            explode(';', $tagText)
+        );
+
+        $tags = new ArrayCollection();
+
+        /** @var TagItemRepository $tagItemRepository */
+        $tagItemRepository = $this->entityManager->getRepository(Tag::class);
+
+        foreach ($textTagArray as $textTag) {
+            if ($tag = $tagItemRepository->findOneBy(['tag' => $textTag])) {
+                $tags[] = $tag;
+                continue;
+            }
+
+            $tag = new Tag();
+            $tag->setTag($textTag);
+
+            $this->entityManager->persist($tag);
+            $this->entityManager->flush();
+
+            $tags[] = $tag;
+        }
+
+
+        return $tags;
     }
 
     private function parseCsv($fileName): array
