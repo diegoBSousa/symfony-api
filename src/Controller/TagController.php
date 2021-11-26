@@ -6,6 +6,7 @@ use App\Entity\Tag;
 use App\Form\TagType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TagController extends AbstractApiController
 {
@@ -32,5 +33,23 @@ class TagController extends AbstractApiController
         $this->getDoctrine()->getManager()->flush();
 
         return $this->response($tag);
+    }
+
+    public function delete(Request $req): Response
+    {
+        $tagId = $req->get('tagId');
+
+        $tag = $this->getDoctrine()->getRepository(Tag::class)->findOneBy([
+            'id' => $tagId
+        ]);
+
+        if (!$tag) {
+            throw new NotFoundHttpException('Tag not found');
+        }
+
+        $this->getDoctrine()->getManager()->remove($tag);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->response(null);
     }
 }
