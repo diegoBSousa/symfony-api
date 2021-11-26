@@ -17,3 +17,10 @@ post_delete:
   methods: [DELETE]
   requirements:
     postId: '\d+'
+
+post_update:
+  path: /api/v1/posts/{postId}
+  controller: App\Controller\PostController::update
+  methods: [PATCH]
+  requirements:
+    postId: '\d+'
