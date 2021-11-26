@@ -24,3 +24,27 @@ post_update:
   methods: [PATCH]
   requirements:
     postId: '\d+'
+
+tag_read:
+  path: /api/v1/tags
+  controller: App\Controller\TagController::index
+  methods: [GET]
+
+tag_create:
+  path: /api/v1/tags
+  controller: App\Controller\TagController::create
+  methods: [POST]
+
+tag_delete:
+  path: /api/v1/tags/{tagId}
+  controller: App\Controller\TagController::delete
+  methods: [DELETE]
+  requirements:
+    tagId: '\d+'
+
+tag_update:
+  path: /api/v1/tags/{tagId}
+  controller: App\Controller\TagController::update
+  methods: [PATCH]
+  requirements:
+    tagId: '\d+'
