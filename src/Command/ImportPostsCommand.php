@@ -12,15 +12,17 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class ImportPostsCommand extends Command
 {
     protected static $defaultName = 'app:import-posts';
-    protected static $defaultDescription = 'Add a short description for your command';
+    protected static $defaultDescription = 'Import or update Post and Tags';
 
     protected function configure(): void
     {
         $this
             ->setDescription(self::$defaultDescription)
-            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
-        ;
+            ->addArgument(
+                'filePath',
+                InputArgument::REQUIRED,
+                'File path relative to application directory'
+            );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
