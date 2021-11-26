@@ -44,12 +44,47 @@ class PostController extends AbstractApiController
         ]);
 
         if (!$post) {
-            throw new NotFoundHttpException('Cart not found');
+            throw new NotFoundHttpException('Post not found');
         }
 
         $this->getDoctrine()->getManager()->remove($post);
         $this->getDoctrine()->getManager()->flush();
 
         return $this->response(null);
+    }
+
+    public function update(Request $req): Response
+    {
+        $postId = $req->get('postId');
+
+        $post = $this->getDoctrine()->getRepository(Post::class)->findOneBy([
+            'id' => $postId
+        ]);
+
+        if (!$post) {
+            throw new NotFoundHttpException('Post not found');
+        }
+
+        $form = $this->buildForm(
+            PostType::class,
+            $post,
+            [
+                'method' => $req->getMethod()
+            ]
+        );
+
+        $form->handleRequest($req);
+
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            return $this->response($form, Response::HTTP_BAD_REQUEST);
+        }
+
+        /** @var Post $post */
+        $post = $form->getData();
+
+        $this->getDoctrine()->getManager()->persist($post);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->response($post);
     }
 }
