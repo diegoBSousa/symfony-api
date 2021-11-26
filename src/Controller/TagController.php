@@ -52,4 +52,39 @@ class TagController extends AbstractApiController
 
         return $this->response(null);
     }
+
+    public function update(Request $req): Response
+    {
+        $tagId = $req->get('tagId');
+
+        $tag = $this->getDoctrine()->getRepository(Tag::class)->findOneBy([
+            'id' => $tagId
+        ]);
+
+        if (!$tag) {
+            throw new NotFoundHttpException('Tag not found');
+        }
+
+        $form = $this->buildForm(
+            TagType::class,
+            $tag,
+            [
+                'method' => $req->getMethod()
+            ]
+        );
+
+        $form->handleRequest($req);
+
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            return $this->response($form, Response::HTTP_BAD_REQUEST);
+        }
+
+        /** @var Tag $tag */
+        $tag = $form->getData();
+
+        $this->getDoctrine()->getManager()->persist($tag);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->response($tag);
+    }
 }
