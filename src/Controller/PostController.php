@@ -6,6 +6,7 @@ use App\Entity\Post;
 use App\Form\PostType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class PostController extends AbstractApiController
 {
@@ -32,5 +33,23 @@ class PostController extends AbstractApiController
         $this->getDoctrine()->getManager()->flush();
 
         return $this->response($post);
+    }
+
+    public function delete(Request $req): Response
+    {
+        $postId = $req->get('postId');
+
+        $post = $this->getDoctrine()->getRepository(Post::class)->findOneBy([
+            'id' => $postId
+        ]);
+
+        if (!$post) {
+            throw new NotFoundHttpException('Cart not found');
+        }
+
+        $this->getDoctrine()->getManager()->remove($post);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->response(null);
     }
 }
