@@ -6,6 +6,8 @@ use App\Repository\PostRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Ignore;
+use Symfony\Component\Serializer\Annotation\MaxDepth;
 
 /**
  * @ORM\Entity(repositoryClass=PostRepository::class)
@@ -36,6 +38,8 @@ class Post
 
     /**
      * @ORM\ManyToMany(targetEntity=Tag::class, inversedBy="posts")
+     * @MaxDepth(1)
+     * @Ignore()
      */
     private $tags;
 
