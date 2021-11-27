@@ -12,7 +12,14 @@ class PostController extends AbstractApiController
 {
     public function index(Request $req): Response
     {
-        $posts = $this->getDoctrine()->getRepository(Post::class)->findAll();
+
+        $currentPage = $req->query->get('page', 1);
+        $pageSize = $req->query->get('limit', 4);
+        $offset = ($currentPage - 1) * $pageSize;
+
+        $posts = $this->getDoctrine()->getRepository(Post::class)
+            ->findBy([], ['id' => 'ASC'], $pageSize, $offset);
+
         return $this->response($posts);
     }
 
