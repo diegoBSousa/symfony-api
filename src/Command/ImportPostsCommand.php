@@ -114,6 +114,8 @@ class ImportPostsCommand extends Command
             explode(';', $tagText)
         );
 
+        $textTagArray = array_filter($textTagArray);
+
         $tags = new ArrayCollection();
 
         /** @var TagItemRepository $tagItemRepository */
