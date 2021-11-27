@@ -10,9 +10,15 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TagController extends AbstractApiController
 {
-    public function index(): Response
+    public function index(Request $req): Response
     {
-        $tags = $this->getDoctrine()->getRepository(Tag::class)->findAll();
+        $currentPage = $req->query->get('page', 1);
+        $pageSize = $req->query->get('limit', 4);
+        $offset = ($currentPage - 1) * $pageSize;
+
+        $tags = $this->getDoctrine()->getRepository(Tag::class)
+            ->findBy([], ['id' => 'ASC'], $pageSize, $offset);
+
         return $this->response($tags);
     }
 
