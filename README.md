@@ -6,12 +6,14 @@ This project aims to demontrate a simple Rest Api implementation, Many-To-Many e
 
 ## Installation
 
-Install my-project with docker-compose
+Install symfony-api with docker-compose
 
 ```bash
+  git clone git@github.com:diegoBSousa/symfony-api.git
+  cd symfony-api
   docker-compose up -d
 ```
-    
+
 ## Importation Command
 
 ```bash
